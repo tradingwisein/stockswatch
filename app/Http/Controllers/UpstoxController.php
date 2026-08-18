@@ -161,4 +161,45 @@ class UpstoxController extends Controller
             'data' => $response->json(),
         ]); */
     }
+
+    public function intraday(Request $symbol)
+    {
+        $accessToken = session('upstox_token');
+
+        $stock = DB::table('stocks')->where('symbol','MOTHERSON')->first() or abort(404);
+
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->get('https://api.upstox.com/v3/historical-candle/intraday/'.$stock->instrument_key.'/minutes/15');
+
+        if($stock) {
+            echo 'Stock Name: '.$stock->symbol.' ('.$stock->name.')'."<br/>";
+        }
+
+
+        $candles = $response->json('data.candles');
+
+        if(count($candles)) {
+            echo '<table border="1" cellpadding="5"><thead><tr>
+                    <th>Date</th><th>O</th><th>H</th><th>L</th><th>C</th><th>Volume</th><th>OI</th>
+            </tr></thead><tbody>';
+        }
+
+        foreach($candles as $candle) {
+            echo '<tr><td>'.$candle[0].'</td>';
+            echo '<td>'.$candle[1].'</td>';
+            echo '<td>'.$candle[2].'</td>';
+            echo '<td>'.$candle[3].'</td>';
+            echo '<td>'.$candle[4].'</td>';
+            echo '<td>'.$candle[5].'</td>';
+            echo '<td>'.$candle[6].'</td></tr>';
+        }
+
+        echo '</tbody></table>';
+
+       /*  return response()->json([
+            'status' => $response->status(),
+            'data' => $response->json(),
+        ]); */
+    }
 }
