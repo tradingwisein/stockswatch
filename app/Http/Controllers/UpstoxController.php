@@ -116,18 +116,20 @@ class UpstoxController extends Controller
         return new Client();
     }
 
-    public function history()
+    public function history(Request $symbol)
     {
         $accessToken = session('upstox_token');
+
+        $today = '2026-08-17';
 
         $response = Http::withToken($accessToken)
             ->acceptJson()
             ->get(
                 'https://api.upstox.com/v3/historical-candle/' .
-                'NSE_EQ|INE139A01034/days/1/2025-01-07/2025-01-01'
+                'NSE_EQ|INE139A01034/minutes/1/'.$today.'/'.$today
             );
 
-        $stock = DB::table('stocks')->where('instrument_key','NSE_EQ|INE139A01034')->first();
+        $stock = DB::table('stocks')->where('symbol','MOTHERSON')->first() or abort(404);
 
         if($stock) {
             echo 'Stock Name: '.$stock->symbol.' ('.$stock->name.')'."<br/>";

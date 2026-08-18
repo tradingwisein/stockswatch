@@ -27,7 +27,7 @@ Route::get('/upstox/login', [UpstoxController::class, 'login'])
 Route::get('/upstox/callback', [UpstoxController::class, 'callback'])
     ->name('upstox.callback');
 
-Route::get('/upstox/history', [UpstoxController::class, 'history']);
+Route::get('/upstox/history/{symbol}', [UpstoxController::class, 'history']);
 
 Route::get('/upstox/profile', [UpstoxController::class, 'profile']);
 
